@@ -29,7 +29,8 @@ read_fwf_example <- function(path = NULL) {
 #' @export
 #'
 #' @examples
-#' fwiffer:::read_fwf_example("example-fwf-dictionary.dd") |> read_fwf_dd()
+#' fwiffer:::read_fwf_example("example-fwf-dictionary.dd") |>
+#'   read_fwf_dd(delim = "\t", skip = 3)
 read_fwf_dd <- function(path, delim = NULL, skip = 0) {
 
   # check that the supplied path points to a valid file
@@ -38,5 +39,5 @@ read_fwf_dd <- function(path, delim = NULL, skip = 0) {
       file.exists(path)
   )
 
-  readr::read_delim(path)
+  readr::read_delim(path, delim = delim, skip = skip)
 }
