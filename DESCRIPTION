@@ -13,7 +13,8 @@ Depends:
     R (>= 4.1.0)
 Imports: 
     purrr,
-    readr
+    readr,
+    rstudioapi
 Suggests: 
     testthat (>= 3.0.0)
 Encoding: UTF-8

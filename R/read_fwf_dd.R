@@ -6,8 +6,8 @@
 #' @noRd
 #'
 #' @examples
-#' read_fwf_example()
-#' read_fwf_example("example-fwf-data.dat")
+#' fwiffer:::read_fwf_example()
+#' fwiffer:::read_fwf_example("example-fwf-data.dat")
 read_fwf_example <- function(path = NULL) {
   if (is.null(path)) {
     dir(system.file("extdata", package = "fwiffer"))
@@ -29,7 +29,7 @@ read_fwf_example <- function(path = NULL) {
 #' @export
 #'
 #' @examples
-#' read_fwf_example("example-fwf-dictionary.dd") |> read_fwf_dd()
+#' fwiffer:::read_fwf_example("example-fwf-dictionary.dd") |> read_fwf_dd()
 read_fwf_dd <- function(path, delim = NULL, skip = 0) {
 
   # check that the supplied path points to a valid file

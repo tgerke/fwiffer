@@ -21,5 +21,5 @@ Makes some assumptions about the structure of the data dictionary file. (I
 think, but TODO let's describe these if that ends up being true).
 }
 \examples{
-read_fwf_example("example-fwf-dictionary.dd") |> read_fwf_dd()
+fwiffer:::read_fwf_example("example-fwf-dictionary.dd") |> read_fwf_dd()
 }
