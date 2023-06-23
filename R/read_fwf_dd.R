@@ -1,0 +1,42 @@
+#' An internal function to access example data files
+#'
+#' @param path Optional string of file name or path within "extdata" to seek
+#'
+#' @return A local path to example files within "extdata" of {fwiffer}
+#' @noRd
+#'
+#' @examples
+#' read_fwf_example()
+#' read_fwf_example("example-fwf-data.dat")
+read_fwf_example <- function(path = NULL) {
+  if (is.null(path)) {
+    dir(system.file("extdata", package = "fwiffer"))
+  } else {
+    system.file("extdata", path, package = "fwiffer", mustWork = TRUE)
+  }
+}
+
+#' Read a fwf data dictionary file
+#'
+#' Makes some assumptions about the structure of the data dictionary file. (I
+#' think, but TODO let's describe these if that ends up being true).
+#'
+#' @param path Path to the data dictionary file
+#' @param delim Single character used to separate fields as in readr::read_delim
+#' @param skip Number of lines to skip before reading data
+#'
+#' @return Arguments to readr::read_fwf and labelled::set_variable_labels
+#' @export
+#'
+#' @examples
+#' read_fwf_example("example-fwf-dictionary.dd") |> read_fwf_dd()
+read_fwf_dd <- function(path, delim = NULL, skip = 0) {
+
+  # check that the supplied path points to a valid file
+  stopifnot(
+    "Supplied `path` does not point to a file that exists" =
+      file.exists(path)
+  )
+
+  readr::read_delim(path)
+}
