@@ -45,16 +45,19 @@ read_fwf_dd <- function(path, skip = 0) {
   # identify which rows define variable names by finding preceding blank rows
   index_rows <- which(vapply(dd_lines, nchar, 1L, USE.NAMES = FALSE) == 0) + 1
   # read a tibble of variable names
-  dd_lines[index_rows] %>%
+  var_names <- dd_lines[index_rows] %>%
     # handle the edge-cases where tabs are encoded as spaces
     vapply(function(x) gsub("       ", "\t", x), "a", USE.NAMES = FALSE) %>%
     vapply(function(x) gsub("      ", "\t", x), "a", USE.NAMES = FALSE) %>%
     vapply(function(x) gsub("		", "\t", x), "a", USE.NAMES = FALSE) %>%
     paste(collapse = "\n") %>%
     readr::read_delim(
-      col_names = c("var_name", "var_type", "var_num", "var_label"),
+      col_names = c("var_name", "var_width", "var_colstart", "var_label"),
       delim = "\t"
     )
+  # strip the "i" from column widths
+  var_names <- var_names %>%
+    dplyr::mutate(var_width = as.integer(gsub("i", "", var_width)))
 
   # identify which rows start chunks of variable labels
   label_ind <- dd_lines %>%
