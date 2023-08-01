@@ -22,6 +22,7 @@ read_fwf_example <- function(path = NULL) {
 #' think, but TODO let's describe these if that ends up being true).
 #'
 #' @param path Path to the data dictionary file
+#' @param col_names TRUE, FALSE, or a character vector of column names
 #' @param delim Single character used to separate fields as in readr::read_delim
 #' @param skip Number of lines to skip before reading data
 #'
@@ -31,7 +32,7 @@ read_fwf_example <- function(path = NULL) {
 #' @examples
 #' fwiffer:::read_fwf_example("example-fwf-dictionary.dd") |>
 #'   read_fwf_dd(delim = "\t", skip = 3)
-read_fwf_dd <- function(path, delim = NULL, skip = 0) {
+read_fwf_dd <- function(path, col_names = FALSE, delim = NULL, skip = 0) {
 
   # check that the supplied path points to a valid file
   stopifnot(
@@ -39,5 +40,6 @@ read_fwf_dd <- function(path, delim = NULL, skip = 0) {
       file.exists(path)
   )
 
-  readr::read_delim(path, delim = delim, skip = skip)
+  readr::read_delim(path, col_names = col_names, delim = delim, skip = skip) |>
+    dplyr::filter_all(dplyr::any_vars(complete.cases(.)))
 }
