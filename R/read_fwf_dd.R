@@ -31,8 +31,8 @@ read_fwf_example <- function(path = NULL) {
 #'
 #' @examples
 #' fwiffer:::read_fwf_example("example-fwf-dictionary.dd") |>
-#'   read_fwf_dd(delim = "\t", skip = 3)
-read_fwf_dd <- function(path, col_names = FALSE, delim = NULL, skip = 0) {
+#'   read_fwf_dd(delim = "\t", skip = 2)
+read_fwf_dd <- function(path, skip = 0) {
 
   # check that the supplied path points to a valid file
   stopifnot(
@@ -40,6 +40,18 @@ read_fwf_dd <- function(path, col_names = FALSE, delim = NULL, skip = 0) {
       file.exists(path)
   )
 
-  readr::read_delim(path, col_names = col_names, delim = delim, skip = skip) |>
-    dplyr::filter_all(dplyr::any_vars(complete.cases(.)))
+  dd_lines <- readr::read_lines(path, skip = skip)
+
+  # identify which rows define variable names by finding preceding blank rows
+  index_rows <- which(vapply(dd_lines, nchar, 1L, USE.NAMES = FALSE) == 0) + 1
+  dd_lines[index_rows] %>%
+    # handle the edge-cases where tabs are encoded as spaces
+    vapply(function(x) gsub("       ", "\t", x), "a", USE.NAMES = FALSE) %>%
+    vapply(function(x) gsub("      ", "\t", x), "a", USE.NAMES = FALSE) %>%
+    vapply(function(x) gsub("		", "\t", x), "a", USE.NAMES = FALSE) %>%
+    paste(collapse = "\n") %>%
+    readr::read_delim(
+      col_names = c("var_name", "var_type", "var_num", "var_label"),
+      delim = "\t"
+    )
 }
