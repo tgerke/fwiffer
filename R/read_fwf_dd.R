@@ -44,6 +44,7 @@ read_fwf_dd <- function(path, skip = 0) {
 
   # identify which rows define variable names by finding preceding blank rows
   index_rows <- which(vapply(dd_lines, nchar, 1L, USE.NAMES = FALSE) == 0) + 1
+  # read a tibble of variable names
   dd_lines[index_rows] %>%
     # handle the edge-cases where tabs are encoded as spaces
     vapply(function(x) gsub("       ", "\t", x), "a", USE.NAMES = FALSE) %>%
@@ -54,4 +55,18 @@ read_fwf_dd <- function(path, skip = 0) {
       col_names = c("var_name", "var_type", "var_num", "var_label"),
       delim = "\t"
     )
+
+  # identify which rows start chunks of variable labels
+  label_ind <- dd_lines %>%
+    grepl("$label", ., fixed = TRUE) %>%
+    which()
+  # identify the chunks of variable labels
+  label_chunks <- label_ind %>%
+    vapply(
+      function(x) index_rows[first(which(index_rows > x))]-2,
+      1
+    )
+  # NAs occur if a label is the last row of the dictionary
+  label_chunks[is.na(label_chunks)] <- length(dd_lines)
+  dd_lines[label_chunks]
 }
